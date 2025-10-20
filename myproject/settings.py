@@ -6,23 +6,22 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Security
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
-SECRET_KEY = os.environ.get('SECRET_KEY', 'fallback-secret-key-for-dev')
-
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    '.onrender.com',  # สำหรับ Render
-]
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-(h9+)!9fddlcm#u#dbsnd2ofu(dt#yllyb_3!$-a69in2u(f3g'  # จะเปลี่ยนทีหลัง
-DEBUG = True
-ALLOWED_HOSTS = []
+# Security settings
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-dev-key-123')
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+
+# Allowed Hosts for Railway
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1', 
+    '.railway.app',
+    '.onrender.com'  # ถ้าใช้ Render ด้วย
+]
 
 # Applications
+# INSTALLED_APPS ต้องมี rest_framework และ drf_yasg
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -32,13 +31,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'drf_yasg',
-    'corsheaders',
-    'students',  # แอปของเรา
+    'students',
 ]
 
+# Middleware - ต้องมี WhiteNoise
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # ← เพิ่มนี้
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # ← สำคัญ!
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -46,6 +45,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
 
 ROOT_URLCONF = 'myproject.urls'
 
@@ -67,13 +67,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'myproject.wsgi.application'
 
-# Database
+# Database configuration for Railway
 DATABASES = {
     'default': dj_database_url.config(
         default='sqlite:///db.sqlite3',
         conn_max_age=600
     )
 }
+
+
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -97,10 +99,11 @@ TIME_ZONE = 'Asia/Bangkok'
 USE_I18N = True
 USE_TZ = True
 
-# Static files
+# Static files configuration
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
